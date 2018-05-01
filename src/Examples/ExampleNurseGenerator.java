@@ -6,11 +6,17 @@ import java.util.ArrayList;
 
 public class ExampleNurseGenerator {
 
-    private ArrayList<Nurse> nurses;
+    private ArrayList<Nurse> nurses = new ArrayList<Nurse>();
+
+    public ExampleNurseGenerator() {
+
+    }
 
     private void generate(){
-        nurses.add(new Nurse(0, "JULIA", "NOWAK", "normalna"));
+        //Nurse n = new Nurse(0, "JULIA", "NOWAK", "normalna");
+
         nurses.add(new Nurse(1, "ZUZANNA", "KOWALSKA", "normalna"));
+        nurses.add(new Nurse(0, "JULIA", "NOWAK", "normalna"));
         nurses.add(new Nurse(2, "ZOFIA", "WISNIEWSKA", "normalna"));
         nurses.add(new Nurse(3, "MAJA", "WOJCIK", "normalna"));
         nurses.add(new Nurse(4, "HANNA", "KOWALCZYK", "normalna"));
@@ -49,6 +55,29 @@ public class ExampleNurseGenerator {
         }
         return nurses;
     }
+
+    public ArrayList<Integer> getNursesId() {
+        if(nurses == null){
+            this.generate();
+        }
+        ArrayList<Integer> nurses_ids = new ArrayList<Integer>();
+
+        for (int i = 0; i < nurses.size(); i++) {
+            nurses_ids.add(nurses.get(i).getId());
+        }
+
+        return nurses_ids;
+    }
+
+    public void print(){
+        if(nurses.size() == 0){
+            this.generate();
+        }
+        for (int i = 0; i < nurses.size(); i++) {
+            System.out.print(nurses.get(i).toString()+"\n");
+        }
+    }
+
 
     public void setNurses(ArrayList<Nurse> nurses) {
         this.nurses = nurses;

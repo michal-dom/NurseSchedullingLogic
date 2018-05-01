@@ -44,4 +44,9 @@ public class Nurse {
         this.surname = surname;
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return id + ". " + name + " " + surname + " - " + type;
+    }
 }
