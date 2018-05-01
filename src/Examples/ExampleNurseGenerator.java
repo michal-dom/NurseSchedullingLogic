@@ -69,6 +69,10 @@ public class ExampleNurseGenerator {
         return nurses_ids;
     }
 
+    public Nurse getNurseById(int id){
+        return nurses.get(id);
+    }
+
     public void print(){
         if(nurses.size() == 0){
             this.generate();
