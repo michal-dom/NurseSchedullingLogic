@@ -5,6 +5,7 @@ public class Nurse {
     private String name;
     private String surname;
     private String type;
+    private int work_hours;
 
     public int getId() {
         return id;
@@ -43,6 +44,15 @@ public class Nurse {
         this.name = name;
         this.surname = surname;
         this.type = type;
+        this.work_hours = 36;
+    }
+
+    public Nurse(int id, String name, String surname, String type, int work_hours) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.type = type;
+        this.work_hours = work_hours;
     }
 
     @Override
