@@ -47,12 +47,6 @@ public class Scheduler {
     * day#0 - pon * day#1 - wt * day#2 - sr * day#3 - czw * day#4 - pt * day#5 - sob * day#6 - nd
     * shift#0 - day * shift#1 - early * shift#2 - late * shift#3 - night
     */
-    public int getNurseOnShift(int iday, int ishift){
-        int num_nurse;
-        num_nurse = (iday == 6 || iday == 5) ? (ishift == 3 ? 1 : 2) : (ishift == 3 ? 1 : 3);
-        return num_nurse;
-    }
-
 
     public boolean hardConstrant(Integer[] day, int id, int iday, int ishift){
         if(oneNurseInDayCons(day, id) && threeNightShiftCons(id, iday, ishift) && noneNightShiftNurseCons(id, iday, ishift)
@@ -117,10 +111,10 @@ public class Scheduler {
         } else {
             return true;
         }
-
     }
 
     public boolean sixDayInRowCons(){
+
         return true;
     }
 
