@@ -5,10 +5,7 @@ import Models.Nurse;
 import Models.Schedule;
 import Models.Week;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Scheduler {
 
@@ -22,7 +19,14 @@ public class Scheduler {
     //private Integer[][] week_schedule = new Integer[NUM_DAYS][NUM_SHIFTS];//nurse ids
     private ArrayList<Nurse> nurses = new ArrayList<Nurse>();
 
+    //private ArrayList<Integer> night_shift_stack = new ArrayList<Integer>();
+    private HashMap<Integer, Integer> night_shift_stack = new HashMap<Integer, Integer>();
+
+
+
     public Scheduler() {
+
+
 
         ExampleNurseGenerator nurse_generator = new ExampleNurseGenerator();
         nurses = nurse_generator.getNurses();
@@ -38,7 +42,7 @@ public class Scheduler {
                 Integer[] day = new Integer[num_shifts];
                 for (int k = 0; k < num_shifts; k++) {
                     tmp_nurse_id = rand.nextInt(17)+1;
-                    if(hardConstrant(day, tmp_nurse_id)){
+                    if(hardConstrant(day, tmp_nurse_id, j, k)){
                         day[k] = tmp_nurse_id;//dodajemy i lecimy dalej
                     } else {
                         k--;//ponawaimy losowanie
@@ -69,8 +73,9 @@ public class Scheduler {
     }
 
 
-    public boolean hardConstrant(Integer[] day, int id){
-        if(oneNurseInDayCons(day, id)){
+    public boolean hardConstrant(Integer[] day, int id, int iday, int ishift){
+
+        if(oneNurseInDayCons(day, id) && threeNightShiftCons(id, iday, ishift)){
             return true;
         }else{
             return false;
@@ -82,7 +87,30 @@ public class Scheduler {
         else return true;
     }
 
-    
+    public boolean threeNightShiftCons(int id, int iday, int ishift){
+        boolean is_night;
+        is_night = (iday == 6 || iday == 5) ? (ishift == 6 ? true : false) : (ishift == 9 ? true : false);
+        if(!is_night){
+            return true;
+        } else {
+            if(night_shift_stack.containsKey(id)){
+                if (night_shift_stack.get(id) > 2){
+                    return false;
+                } else {
+                    int tmp = night_shift_stack.get(id) + 1;
+                    night_shift_stack.put(id, tmp);
+                    return true;
+                }
+            } else {
+                night_shift_stack.put(id, 1);
+                return true;
+            }
+        }
+
+    }
+
+
+
 
 
 
