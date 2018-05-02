@@ -16,6 +16,7 @@ public class Scheduler {
     private ArrayList<Nurse> nurses = new ArrayList<Nurse>();
 
     private HashMap<Integer, Integer> night_shift_stack = new HashMap<Integer, Integer>();
+    private ArrayList<Integer[]> week_schedule = new ArrayList<Integer[]>();
 
     public Scheduler() {
         ExampleNurseGenerator nurse_generator = new ExampleNurseGenerator();
@@ -26,45 +27,59 @@ public class Scheduler {
         Random rand = new Random();
         int num_shifts;
         int tmp_nurse_id;
+        int stopper = 0;
         for (int i = 0; i < NUM_WEEKS; i++) {
             for (int j = 0; j < NUM_DAYS; j++) {
                 num_shifts = (j == 6 || j == 5) ? 7 : 10;
                 Integer[] day = new Integer[num_shifts];
                 for (int k = 0; k < num_shifts; k++) {
+                    if(stopper > 10000) generateSchedule();
                     tmp_nurse_id = rand.nextInt(16)+1;
                     if(hardConstrant(day, tmp_nurse_id, j, k)){
                         day[k] = tmp_nurse_id;//dodajemy i lecimy dalej
                     } else {
                         k--;//ponawaimy losowanie
+                        stopper++;
                     }
                 }
+                week_schedule.add(day);
                 System.out.println(Arrays.toString(day));
                 System.out.print("\n");
             }
         }
+        //System.out.print(week_schedule.toString());
+
     }
     /*
     * day#0 - pon * day#1 - wt * day#2 - sr * day#3 - czw * day#4 - pt * day#5 - sob * day#6 - nd
     * shift#0 - day * shift#1 - early * shift#2 - late * shift#3 - night
     */
 
+    /*public void print(){
+        for (int i = 0; i < week_schedule.size(); i++) {
+
+        }
+    }*/
+
     public boolean hardConstrant(Integer[] day, int id, int iday, int ishift){
         if(oneNurseInDayCons(day, id) && threeNightShiftCons(id, iday, ishift) && noneNightShiftNurseCons(id, iday, ishift)
-                && workHoursCons(id, iday)){
+                && workHoursCons(id, iday) && consecutiveShiftsCons(id)
+                ){
             return true;
         }else{
             return false;
         }
     }
 
+    //2
     public boolean oneNurseInDayCons(Integer[] day, int id){
         if(Arrays.asList(day).contains(id)) return false;
         else return true;
     }
-
+    //4,9
     public boolean threeNightShiftCons(int id, int iday, int ishift){
         boolean is_night;
-        is_night = (iday == 6 || iday == 5) ? (ishift == 6 ? true : false) : (ishift == 9 ? true : false);
+        is_night = (iday == 6 || iday == 5) ? (ishift == 6) : (ishift == 9);
         if(!is_night){
             return true;
         } else {
@@ -82,17 +97,14 @@ public class Scheduler {
             }
         }
     }
-
+    //3
     public boolean workHoursCons(int id, int iday){
-
         Nurse nurse = nurses.get(id-1);
-
         if (iday == 0){
             for (Nurse n: nurses) {
                 n.regenWorkHours();
             }
         }
-
         int work_hours;
         if(nurse.getWorkHours() > 0){
             work_hours = nurse.getWorkHours() - 8;
@@ -103,6 +115,31 @@ public class Scheduler {
         }
     }
 
+    //5
+    public boolean consecutiveShiftsCons(int id){
+        int bound_up = week_schedule.size() > 6 ? week_schedule.size() - 6 : 0;
+
+        int con_days = 0;
+        for (int i = bound_up; i < week_schedule.size(); i++) {
+            if(Arrays.asList(week_schedule.get(i)).contains(id)){
+                con_days++;
+                //System.out.print("+");
+            } else {
+                con_days = 0;
+                //System.out.print("0");
+            }
+            if(con_days > 5){
+                return false;
+                //System.out.print("\ntu:\n");
+            }
+        }
+
+        return true;
+    }
+
+
+
+    //11
     public boolean noneNightShiftNurseCons(int id, int iday, int ishift){
         boolean is_night;
         is_night = (iday == 6 || iday == 5) ? (ishift == 6 ? true : false) : (ishift == 9 ? true : false);
@@ -112,7 +149,6 @@ public class Scheduler {
             return true;
         }
     }
-
     public boolean sixDayInRowCons(){
 
         return true;
