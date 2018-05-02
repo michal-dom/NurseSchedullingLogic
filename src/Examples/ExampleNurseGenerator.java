@@ -27,10 +27,10 @@ public class ExampleNurseGenerator {
         nurses.add(new Nurse(10, "NATALIA", "DABROWSKA", "normalna"));
         nurses.add(new Nurse(11, "WIKTORIA", "KOZLOWSKA", "normalna"));
         nurses.add(new Nurse(12, "EMILIA", "JANKOWSKA", "bez_nocnych"));
-        nurses.add(new Nurse(13, "ANTONINA", "WOJCIECHOWSKA", "normalna", 36));
-        nurses.add(new Nurse(14, "LAURA", "KWIATKOWSKA", "normalna", 20));
-        nurses.add(new Nurse(15, "POLA", "MAZUR", "normalna", 20));
-        nurses.add(new Nurse(16, "IGA", "KRAWCZYK", "normalna", 20));
+        nurses.add(new Nurse(13, "ANTONINA", "WOJCIECHOWSKA", "normalna", 32));
+        nurses.add(new Nurse(14, "LAURA", "KWIATKOWSKA", "normalna", 24));
+        nurses.add(new Nurse(15, "POLA", "MAZUR", "normalna", 24));
+        nurses.add(new Nurse(16, "IGA", "KRAWCZYK", "normalna", 24));
 //        nurses.add(new Nurse(17, "ANNA", "KACZMAREK", "normalna"));
 //        nurses.add(new Nurse(18, "LILIANA", "PIOTROWSKA", "normalna"));
 //        nurses.add(new Nurse(19, "MARCELINA", "GRABOWSKA", "normalna"));
@@ -49,7 +49,7 @@ public class ExampleNurseGenerator {
     }
 
     public ArrayList<Nurse> getNurses() {
-        if(nurses == null){
+        if(nurses.size() == 0){
             this.generate();
         }
         return nurses;
@@ -83,6 +83,7 @@ public class ExampleNurseGenerator {
 
 
     public void setNurses(ArrayList<Nurse> nurses) {
+
         this.nurses = nurses;
     }
 }

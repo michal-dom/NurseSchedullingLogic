@@ -13,25 +13,15 @@ public class Scheduler {
     private static final int NUM_WEEKS = 5;
     private static final int NUM_DAYS = 7;
 
-
-
-
-    //private Integer[][] week_schedule = new Integer[NUM_DAYS][NUM_SHIFTS];//nurse ids
     private ArrayList<Nurse> nurses = new ArrayList<Nurse>();
 
-    //private ArrayList<Integer> night_shift_stack = new ArrayList<Integer>();
     private HashMap<Integer, Integer> night_shift_stack = new HashMap<Integer, Integer>();
 
-
-
     public Scheduler() {
-
-
-
         ExampleNurseGenerator nurse_generator = new ExampleNurseGenerator();
         nurses = nurse_generator.getNurses();
-
     }
+
     public void generateSchedule(){
         Random rand = new Random();
         int num_shifts;
@@ -41,7 +31,7 @@ public class Scheduler {
                 num_shifts = (j == 6 || j == 5) ? 7 : 10;
                 Integer[] day = new Integer[num_shifts];
                 for (int k = 0; k < num_shifts; k++) {
-                    tmp_nurse_id = rand.nextInt(17)+1;
+                    tmp_nurse_id = rand.nextInt(16)+1;
                     if(hardConstrant(day, tmp_nurse_id, j, k)){
                         day[k] = tmp_nurse_id;//dodajemy i lecimy dalej
                     } else {
@@ -54,17 +44,8 @@ public class Scheduler {
         }
     }
     /*
-    * day#0 - pon
-    * day#1 - wt
-    * day#2 - sr
-    * day#3 - czw
-    * day#4 - pt
-    * day#5 - sob
-    * day#6 - nd
-    * shift#0 - day
-    * shift#1 - early
-    * shift#2 - late
-    * shift#3 - night
+    * day#0 - pon * day#1 - wt * day#2 - sr * day#3 - czw * day#4 - pt * day#5 - sob * day#6 - nd
+    * shift#0 - day * shift#1 - early * shift#2 - late * shift#3 - night
     */
     public int getNurseOnShift(int iday, int ishift){
         int num_nurse;
@@ -74,8 +55,8 @@ public class Scheduler {
 
 
     public boolean hardConstrant(Integer[] day, int id, int iday, int ishift){
-
-        if(oneNurseInDayCons(day, id) && threeNightShiftCons(id, iday, ishift)){
+        if(oneNurseInDayCons(day, id) && threeNightShiftCons(id, iday, ishift) && noneNightShiftNurseCons(id, iday, ishift)
+                && workHoursCons(id, iday)){
             return true;
         }else{
             return false;
@@ -106,7 +87,41 @@ public class Scheduler {
                 return true;
             }
         }
+    }
 
+    public boolean workHoursCons(int id, int iday){
+
+        Nurse nurse = nurses.get(id-1);
+
+        if (iday == 0){
+            for (Nurse n: nurses) {
+                n.regenWorkHours();
+            }
+        }
+
+        int work_hours;
+        if(nurse.getWorkHours() > 0){
+            work_hours = nurse.getWorkHours() - 8;
+            nurse.setWorkHours(work_hours);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean noneNightShiftNurseCons(int id, int iday, int ishift){
+        boolean is_night;
+        is_night = (iday == 6 || iday == 5) ? (ishift == 6 ? true : false) : (ishift == 9 ? true : false);
+        if(is_night && id == 12){
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public boolean sixDayInRowCons(){
+        return true;
     }
 
 
