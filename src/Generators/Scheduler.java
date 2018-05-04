@@ -24,23 +24,34 @@ public class Scheduler {
     }
 
     public void generateSchedule(){
+        //week_schedule.clear();
+        week_schedule.removeAll(week_schedule);
+        night_shift_stack.clear();
         Random rand = new Random();
-        int num_shifts;
-        int tmp_nurse_id;
+        int num_shifts = 0;
+        int tmp_nurse_id = 0;
         int stopper = 0;
+        System.out.print("\n------\n");
         for (int i = 0; i < NUM_WEEKS; i++) {
             for (int j = 0; j < NUM_DAYS; j++) {
                 num_shifts = (j == 6 || j == 5) ? 7 : 10;
                 Integer[] day = new Integer[num_shifts];
                 for (int k = 0; k < num_shifts; k++) {
-                    if(stopper > 10000) generateSchedule();
+                    //System.out.print("loop: " + i + "");
+                    if(stopper > 1000000) {
+                        //System.out.print("\ninterruption: infinite loop\n");
+                        stopper = 0;
+                        generateSchedule();
+                    }
                     tmp_nurse_id = rand.nextInt(16)+1;
-                    if(hardConstrant(day, tmp_nurse_id, j, k)){
+                    if(hardConstrant(day, tmp_nurse_id, j, k, i)){
                         day[k] = tmp_nurse_id;//dodajemy i lecimy dalej
+                        stopper = 0;
                     } else {
                         k--;//ponawaimy losowanie
                         stopper++;
                     }
+                    //stopper++;
                 }
                 week_schedule.add(day);
                 System.out.println(Arrays.toString(day));
@@ -61,9 +72,13 @@ public class Scheduler {
         }
     }*/
 
-    public boolean hardConstrant(Integer[] day, int id, int iday, int ishift){
-        if(oneNurseInDayCons(day, id) && threeNightShiftCons(id, iday, ishift) && noneNightShiftNurseCons(id, iday, ishift)
-                && workHoursCons(id, iday) && consecutiveShiftsCons(id)
+    public boolean hardConstrant(Integer[] day, int id, int iday, int ishift, int iweek){
+        if(oneNurseInDayCons(day, id) &&
+                threeNightShiftCons(id, iday, ishift) &&
+                noneNightShiftNurseCons(id, iday, ishift) &&
+                workHoursCons(id, iday) &&
+                consecutiveShiftsCons(id) &&
+                hoursOfRestCons(id, ishift, iday, iweek)/**/
                 ){
             return true;
         }else{
@@ -152,6 +167,59 @@ public class Scheduler {
     public boolean sixDayInRowCons(){
 
         return true;
+    }
+
+
+    public boolean hoursOfRestCons(int id, int ishift, int iday, int iweek){
+        int type_of_shift = typeOfShift(ishift, iday);
+
+        int iday_before = ((iweek * 7) + iday) - 1 ;
+        int ishift_before;
+
+        if(iweek == 0 && iday == 0) return true;
+        if(!Arrays.asList(week_schedule.get(iday_before)).contains(id)) return true;
+
+        ishift_before = Arrays.asList(week_schedule.get(iday_before)).indexOf(id);
+        int type_of_shift_before = typeOfShift(ishift_before, iday == 0 ? 6 : (iday - 1) );
+
+        if(type_of_shift == 1){
+            if(type_of_shift_before == 3 || type_of_shift_before == 3){
+                return false;
+            }
+        }
+        if(type_of_shift == 2){
+            if(type_of_shift_before == 3){
+                return false;
+            }
+        }
+//        if(type_of_shift == 3){
+//            System.out.print(" ok: ");
+//        }
+
+        return true;
+    }
+
+    public int typeOfShift(int ishift, int iday){
+        int type_of_shift;
+        if(iday == 6 || iday == 5){//weekend
+            if(ishift == 6){
+                type_of_shift = 3;
+            } else if (ishift == 5 || ishift == 4){
+                type_of_shift = 2;
+            } else {
+                type_of_shift = 1;
+            }
+        } else {
+            if(ishift == 9){
+                type_of_shift = 3;
+            } else if (ishift == 8 || ishift == 7 || ishift == 6){
+                type_of_shift = 2;
+            } else {
+                type_of_shift = 1;
+            }
+        }
+        return type_of_shift;
+
     }
 
 
