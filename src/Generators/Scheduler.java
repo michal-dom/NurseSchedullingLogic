@@ -14,24 +14,25 @@ public class Scheduler {
     private static final int NUM_DAYS = 7;
 
     private ArrayList<Nurse> nurses = new ArrayList<Nurse>();
-
+    ExampleNurseGenerator nurse_generator = new ExampleNurseGenerator();
     private HashMap<Integer, Integer> night_shift_stack = new HashMap<Integer, Integer>();
     private ArrayList<Integer[]> week_schedule = new ArrayList<Integer[]>();
 
     public Scheduler() {
-        ExampleNurseGenerator nurse_generator = new ExampleNurseGenerator();
-        nurses = nurse_generator.getNurses();
+
+        //nurses = nurse_generator.getNurses();
     }
 
     public void generateSchedule(){
         //week_schedule.clear();
+        nurses = nurse_generator.getNurses();
         week_schedule.removeAll(week_schedule);
         night_shift_stack.clear();
         Random rand = new Random();
         int num_shifts = 0;
         int tmp_nurse_id = 0;
         int stopper = 0;
-        System.out.print("\n------\n");
+        //System.out.print("\n------\n");
         for (int i = 0; i < NUM_WEEKS; i++) {
             for (int j = 0; j < NUM_DAYS; j++) {
                 num_shifts = (j == 6 || j == 5) ? 7 : 10;
@@ -54,8 +55,8 @@ public class Scheduler {
                     //stopper++;
                 }
                 week_schedule.add(day);
-                System.out.println(Arrays.toString(day));
-                System.out.print("\n");
+                //System.out.println(Arrays.toString(day));
+//                System.out.print("\n");
             }
         }
         //System.out.print(week_schedule.toString());
@@ -222,11 +223,20 @@ public class Scheduler {
 
     }
 
+    public void print(){
+        for ( Integer[] arr: week_schedule ) {
+            System.out.print(Arrays.toString(arr));
+            System.out.print("\n");
+        }
+    }
 
 
+    public ArrayList<Integer[]> getWeek_schedule() {
+        return week_schedule;
+    }
 
-
-
-
+    public void setWeek_schedule(ArrayList<Integer[]> week_schedule) {
+        this.week_schedule = week_schedule;
+    }
 }
 

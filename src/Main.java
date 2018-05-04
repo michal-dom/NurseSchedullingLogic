@@ -10,7 +10,12 @@ public class Main {
         Random rand = new Random();
         //ExampleNurseGenerator generator = new ExampleNurseGenerator();
         //generator.print();
+        long start_time = System.nanoTime();
         s.generateSchedule();
+        long end_time = System.nanoTime();
 
+        s.print();
+        double difference = (end_time - start_time) / 1e6;
+        System.out.print("czas szedulingu: " + difference);
     }
 }
