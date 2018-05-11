@@ -10,6 +10,8 @@ public class WorkHoursTest {
     @Test
     public void test(){
         Scheduler scheduler = new Scheduler();
-        assertEquals(true, scheduler.workHoursCons(1, 4));
+        int id;
+        int iday;
+        assertEquals(false, scheduler.workHoursCons(1, 4));
     }
 }
